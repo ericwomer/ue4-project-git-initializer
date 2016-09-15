@@ -204,7 +204,7 @@ Saved/
 
 for i in $PARAMS
 do
-case "$@" in
+case $i in
     -h|--help)
     usage
     shift # past argument
