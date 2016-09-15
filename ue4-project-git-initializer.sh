@@ -207,6 +207,10 @@ Saved/
 # Explcitly ignore Mac DS_Store files, regardless of where they are
 .DS_Store
 
+# Ignore files specificly generated for CodeLite
+*CodeLitePreProcessor.txt
+*CodeCompletionFolders.txt
+
 # Explcitly ignore this script
 %s
 " $SCRIPT_NAME  > .gitignore
