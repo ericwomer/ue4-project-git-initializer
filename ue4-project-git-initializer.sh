@@ -170,8 +170,9 @@ printf "
 !VERSION
 !ChangeLog
 
-# For projects do not ignore the Content/ folder as git clean -fxd will destroy it.
-!Content/
+# For projects do not ignore files under the Content/ folder.
+!*.uasset
+!*.umap
 
 # Ignore Unix backup files
 *~
@@ -205,7 +206,10 @@ Saved/
 
 # Explcitly ignore Mac DS_Store files, regardless of where they are
 .DS_Store
-" > .gitignore
+
+# Explcitly ignore this script
+%s
+" $SCRIPT_NAME  > .gitignore
 }
 
 for i in $PARAMS
@@ -291,11 +295,11 @@ if [ ${OVERWRITE_GITIGNORE} ]; then
   fi
 fi
 
-if [[ ! -d .git && ($INITIALIZE_EMTY_GIT || $INITIALIZE_EMTY_GIT_NO_SET_ORIGIN) ]]; then
+if [[ ! -d .git && ( $INITIALIZE_EMTY_GIT || $INITIALIZE_EMTY_GIT_NO_SET_ORIGIN) ]]; then
   git init
   git add -A
   git commit -a -m "Project Git Repositary Initialization"
-  if [[ ! -z "$GIT_REPO_URL" && -z $INITIALIZE_EMTY_GIT_NO_SET_ORIGIN ]]; then
+  if [[ ! -z "$GIT_REPO_URL" || -z $INITIALIZE_EMTY_GIT_NO_SET_ORIGIN ]]; then
     git remote add origin "$GIT_REPO_URL"
   else
     printf "\033[1;33m%s \n\033[0m" "Warning! Not setting remote origin url"
