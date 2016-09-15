@@ -26,20 +26,23 @@ else
   INITIALIZE_EMPTY_GIT=false
 fi
 
+INITIALIZE_EMTY_GIT_NO_SET_ORIGIN=false
+
 SCRIPT_NAME=`basename "$0"`
 
 # Script usage line, subject to change.
 usage() {
 printf "%s version alpha 0.0.1:
 Usage:
-\tbash %s --ue4-root-dir=\$(UE4 Root Folder) --git-repo-url=\$(Git Origin Remote URL For Your Project) --project-file=\$(PROJECT_FILE)
+\tbash %s --ue4-root-dir=\$(UE4_ROOT_DIR) --git-repo-url=\$(GIT_ORIGIN_URL) --project=\$(PROJECT_NAME)
 \tgenerate everything needed to get started.
-\tbash %s --ue4-root-dir=\$(UE4 Root Folder) --project-file=\$(PROJECT_FILE)
+\tbash %s --ue4-root-dir=\$(UE4_ROOT_DIR) --project=\$(PROJECT_NAME) --no-origin-url
 \tgenerate Makefile and other ide project files.
-\tbash %s --project-file=\$(PROJECT_FILE)
+\tbash %s --project=\$(PROJECT_NAME) --no-origin-url
 just to create the git repo and manually do the previous steps your self:
 \ttouch .gitignore - to include all files that are generated( not recomended) and do not use the embeded .gitignore file
 \ttouch Makefile - to stop the creation of an initial Makefile that is run
+\t--project=\$(PROJECT_NAME) and (--no-origin-url or --git-repo-url=\$(GIT_ORIGIN_URL)) are manditory.
 " $SCRIPT_NAME $SCRIPT_NAME $SCRIPT_NAME $SCRIPT_NAME
 exit 0
 }
@@ -167,6 +170,9 @@ printf "
 !VERSION
 !ChangeLog
 
+# For projects do not ignore the Content/ folder as git clean -fxd will destroy it.
+!Content/
+
 # Ignore Unix backup files
 *~
 
@@ -224,6 +230,12 @@ case $i in
     INITIALIZE_EMTY_GIT=true
     shift # past argument
     ;;
+    --no-origin-url)
+    GIT_REPO_URL=""
+    INITIALIZE_EMTY_GIT=true
+    INITIALIZE_EMTY_GIT_NO_SET_ORIGIN=true
+    shift
+    ;;
     --project=*)
     PROJECT_FILE_NAME="${i#*=}"
 
@@ -279,11 +291,11 @@ if [ ${OVERWRITE_GITIGNORE} ]; then
   fi
 fi
 
-if [[ ! -d .git && $INITIALIZE_EMTY_GIT ]]; then
+if [[ ! -d .git && ($INITIALIZE_EMTY_GIT || $INITIALIZE_EMTY_GIT_NO_SET_ORIGIN) ]]; then
   git init
   git add -A
   git commit -a -m "Project Git Repositary Initialization"
-  if [ ! -z "$GIT_REPO_URL" ]; then
+  if [[ ! -z "$GIT_REPO_URL" && -z $INITIALIZE_EMTY_GIT_NO_SET_ORIGIN ]]; then
     git remote add origin "$GIT_REPO_URL"
   else
     printf "\033[1;33m%s \n\033[0m" "Warning! Not setting remote origin url"
