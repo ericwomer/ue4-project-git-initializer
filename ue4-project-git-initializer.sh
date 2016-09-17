@@ -120,6 +120,10 @@ printf "
 !*.txt
 !*.md
 
+# Open document files
+!*.odt
+!*.ods
+
 # Script files
 !*.bat
 !*.sh
@@ -170,10 +174,6 @@ printf "
 !VERSION
 !ChangeLog
 
-# For projects do not ignore files under the Content/ folder.
-!*.uasset
-!*.umap
-
 # Ignore Unix backup files
 *~
 
@@ -213,6 +213,12 @@ Saved/
 
 # Explcitly ignore this script
 %s
+
+## Project asset files
+!*.uasset
+!*.umap
+
+## Add your own personal exceptions here ##
 " $SCRIPT_NAME  > .gitignore
 }
 

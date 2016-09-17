@@ -9,3 +9,6 @@ Usage:
 just to create the git repo and manually do the previous steps your self:
     touch .gitignore - to include all files that are generated( not recomended) and do not use the embeded .gitignore file
     touch Makefile - to stop the creation of an initial Makefile that is run
+
+*TODO*
+	- Add support for git lfs
